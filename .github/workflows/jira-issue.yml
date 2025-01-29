@@ -80,7 +80,7 @@ jobs:
           fi
 
           # 4️⃣ 브랜치 이름 UTF-8 인코딩 처리 (한글 지원)
-          BRANCH_NAME="${{ steps.create.outputs.issue }}-${SAFE_TITLE}"
+          BRANCH_NAME="[${{ steps.create.outputs.issue }}]${SAFE_TITLE}"
           echo "Final Branch Name: $BRANCH_NAME"
 
           # 5️⃣ 한글 브랜치 checkout을 위한 설정 (Git이 한글을 인식하도록 환경 설정)
