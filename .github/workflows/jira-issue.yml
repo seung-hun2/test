@@ -66,8 +66,26 @@ jobs:
 
       - name: Create branch with Ticket number
         run: |
-           git checkout -b "${{ steps.create.outputs.issue }} ${{ github.event.issue.title }}"
-           git push origin "${{ steps.create.outputs.issue }} ${{ github.event.issue.title }}"
+          # 1️⃣ GitHub 이슈 제목 가져오기
+          ISSUE_TITLE="${{ github.event.issue.title }}"
+          echo "Original Issue Title: $ISSUE_TITLE"
+
+          # 2️⃣ 소문자로 변환, 공백을 '-'로 변경, 특수 문자 제거
+          SAFE_TITLE=$(echo "$ISSUE_TITLE" | tr '[:upper:]' '[:lower:]' | tr ' ' '-' | tr -cd 'a-z0-9-')
+          echo "Sanitized Issue Title: $SAFE_TITLE"
+
+          # 3️⃣ 만약 제목이 비어 있으면 기본값('new-issue') 사용
+          if [ -z "$SAFE_TITLE" ]; then
+            SAFE_TITLE="new-issue"
+          fi
+
+          # 4️⃣ 최종 브랜치 이름 만들기
+          BRANCH_NAME="${{ steps.create.outputs.issue }}-${SAFE_TITLE}"
+          echo "Final Branch Name: $BRANCH_NAME"
+
+          # 5️⃣ 브랜치 생성 및 푸시
+          git checkout -b "$BRANCH_NAME"
+          git push origin "$BRANCH_NAME"
 
       - name: Update issue title
         uses: actions-cool/issues-helper@v3
