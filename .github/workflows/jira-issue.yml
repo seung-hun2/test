@@ -71,7 +71,7 @@ jobs:
           echo "Original Issue Title: $ISSUE_TITLE"
 
           # 2️⃣ 공백을 '-'로 변경, 특수 문자 제거 (한글 포함)
-          SAFE_TITLE=$(echo "$ISSUE_TITLE" | sed 's/ /-/g' | tr -cd '[:alnum:]-ㄱ-ㅎㅏ-ㅣ가-힣')
+          SAFE_TITLE=$(echo "$ISSUE_TITLE" | sed 's/ /_/g' | tr -cd '[:alnum:]-ㄱ-ㅎㅏ-ㅣ가-힣')
           echo "Sanitized Issue Title: $SAFE_TITLE"
 
           # 3️⃣ 제목이 비어있으면 기본값 사용
@@ -80,7 +80,7 @@ jobs:
           fi
 
           # 4️⃣ 브랜치 이름 UTF-8 인코딩 처리 (한글 지원)
-          BRANCH_NAME="[${{ steps.create.outputs.issue }}]${SAFE_TITLE}"
+          BRANCH_NAME="${{ steps.create.outputs.issue }}_${SAFE_TITLE}"
           echo "Final Branch Name: $BRANCH_NAME"
 
           # 5️⃣ 한글 브랜치 checkout을 위한 설정 (Git이 한글을 인식하도록 환경 설정)
